@@ -87,6 +87,23 @@ void Dictionary::insert( Profile * newElement )  {
 
    // Put your code here!
 
+
+
+    if(getElementCount() == CAPACITY){
+      throw UnableToInsertException("Unable to insert.");
+    }
+    if(get(*newElement) != nullptr){
+      throw ElementAlreadyExistsException("Element already exists.");
+    } 
+
+    Profile* nextElement = new Profile;
+
+    hashTable[elementCount] = nextElement;
+
+
+
+    elementCount++;
+
    return;
 }
 
@@ -98,8 +115,21 @@ void Dictionary::insert( Profile * newElement )  {
 Profile * Dictionary::get( Profile & target )  {
 
    // Put your code here!
+   if(elementCount == 0){
+    throw EmptyDataCollectionException("Dictionary is empty.");
+   }
+
+   for(unsigned int i = 0; i<CAPACITY; i++){
+    for (unsigned int j = 0; j<CAPACITY; j++){
+      if (hashTable[i][j] == target){
+        return hashTable[i];
+      }
+    }
+   }
+   
    
    return nullptr; 
+   throw ElementDoesNotExistException("Target not found.");
 }
    
 // Description: Prints all elements stored in the Dictionary (unsorted).
