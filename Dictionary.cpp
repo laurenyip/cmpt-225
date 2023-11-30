@@ -107,13 +107,27 @@ void Dictionary::insert(Profile *newElement)
   {
     throw UnableToInsertException("Unable to insert.");
   }
-  if (get(*newElement) != nullptr)
-  {
-    throw ElementAlreadyExistsException("Element already exists.");
+  
+
+    try{
+get(*newElement);
+    }
+   
+
+  catch(ElementAlreadyExistsException & e){
+ cout << " Element already exists" << endl;
   }
+    catch (EmptyDataCollectionException & e) {
+
+    }
+
+  
 
   Profile *nextElement = new Profile(*newElement);
-  int newIndex = hashFunction(newElement->getUserName());
+  unsigned int newIndex = hashFunction(newElement->getUserName());
+
+  
+cout << "pass" << endl;
   while (hashTable[newIndex] != nullptr)
   {
     // Linear probing: Move to the next slot
@@ -123,6 +137,8 @@ void Dictionary::insert(Profile *newElement)
   hashTable[newIndex] = nextElement;
 
   elementCount++;
+
+  cout << elementCount  << endl;
 
   return;
 }
@@ -134,23 +150,28 @@ void Dictionary::insert(Profile *newElement)
 Profile *Dictionary::get(Profile &target)
 {
 
+  cout << "getCount"  << endl;
+
   // Put your code here!
   if (elementCount == 0)
   {
     throw EmptyDataCollectionException("Dictionary is empty.");
   }
 
+
+
   for (unsigned int i = 0; i < CAPACITY; i++)
-  {
-    for (unsigned int j = 0; j < CAPACITY; j++)
-    {
-      if (hashTable[i][j] == target)
+  { 
+   
+if (hashTable[i] != nullptr && hashTable[i]->getUserName() == target.getUserName())
       {
         return hashTable[i];
       }
-    }
+    
+      
+    
   }
-
+  
   return nullptr;
   throw ElementDoesNotExistException("Target not found.");
 }
