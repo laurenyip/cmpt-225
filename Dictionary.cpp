@@ -103,42 +103,37 @@ void Dictionary::insert(Profile *newElement)
 
   // Put your code here!
 
-  if (getElementCount() >= CAPACITY)
+  if (getElementCount() >= getCapacity())
   {
     throw UnableToInsertException("Unable to insert.");
   }
-  
 
-    try{
-get(*newElement);
-    }
-   
-
-  catch(ElementAlreadyExistsException & e){
- cout << " Element already exists" << endl;
+  try
+  {
+    get(*newElement);
   }
-    catch (EmptyDataCollectionException & e) {
 
-    }
-
-  
+  catch (ElementAlreadyExistsException &e)
+  {
+    cout << " Element already exists" << endl;
+  }
+  catch (EmptyDataCollectionException &e)
+  {
+    cout << "Empty Data Collection" << endl;
+  }
 
   Profile *nextElement = new Profile(*newElement);
   unsigned int newIndex = hashFunction(newElement->getUserName());
 
-  
-cout << "pass" << endl;
   while (hashTable[newIndex] != nullptr)
   {
     // Linear probing: Move to the next slot
-    newIndex = (newIndex + 1) % CAPACITY;
+    newIndex = newIndex + 1;
   }
 
-  hashTable[newIndex] = nextElement;
+  hashTable[1] = nextElement;
 
   elementCount++;
-
-  cout << elementCount  << endl;
 
   return;
 }
@@ -150,28 +145,21 @@ cout << "pass" << endl;
 Profile *Dictionary::get(Profile &target)
 {
 
-  cout << "getCount"  << endl;
-
   // Put your code here!
   if (elementCount == 0)
   {
     throw EmptyDataCollectionException("Dictionary is empty.");
   }
 
-
-
   for (unsigned int i = 0; i < CAPACITY; i++)
-  { 
-   
-if (hashTable[i] != nullptr && hashTable[i]->getUserName() == target.getUserName())
-      {
-        return hashTable[i];
-      }
-    
-      
-    
+  {
+
+    if (hashTable[i] != nullptr && hashTable[i]->getUserName() == target.getUserName())
+    {
+      return hashTable[i];
+    }
   }
-  
+
   return nullptr;
   throw ElementDoesNotExistException("Target not found.");
 }

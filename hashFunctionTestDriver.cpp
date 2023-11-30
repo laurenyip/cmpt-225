@@ -37,7 +37,7 @@ void histogram(unsigned int *initialProbes, unsigned int htCapacity)
        << "Histogram showing distribution of hash indices over the hash table: " << endl;
   for (unsigned int i = 0; i < htCapacity; i++)
   {
-    cout << "At hashTable[" << i << "]: ";
+    cout << "At HashTable[" << i << "]: ";
     for (unsigned int j = 0; j < initialProbes[i]; j++)
       cout << "*";
     cout << endl;
