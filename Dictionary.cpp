@@ -87,7 +87,11 @@ unsigned int Dictionary::hashFunction(string indexingKey)
   uint64_t indexingKeyInt = stoul(indexingKey); // O(1)
 
   // "hashCode" is an intermediate result
-  unsigned int hashCode = indexingKeyInt % CAPACITY; // O(1)
+  unsigned int hashCode = (indexingKeyInt + indexingKeyInt * indexingKeyInt) % CAPACITY; // O(1)
+  if (hashCode % 101 == 0)
+  {
+    hashCode = hashCode / 2;
+  }
 
   return hashCode;
 }
@@ -101,38 +105,51 @@ unsigned int Dictionary::hashFunction(string indexingKey)
 void Dictionary::insert(Profile *newElement)
 {
 
-  // Put your code here!
-
-  if (getElementCount() >= getCapacity())
+  // throw UnableToInsertException when cannot
+  // insert newElement in the Dictionary
+  if (elementCount == CAPACITY)
   {
-    throw UnableToInsertException("Unable to insert.");
+    throw UnableToInsertException("The Dictionary is full");
   }
 
-  try
+  // get indexing key from the new element
+  string indexingKey = newElement->getUserName();
+
+  // hash the indexing key to get the initial index in the hash table
+  unsigned int index = hashFunction(indexingKey);
+
+  // store the initial index into the a varaible
+  unsigned int initialIndex = index;
+
+  // while loop with parameters that
+  // checks whether the slot at the current index in the hash table is occupied
+  while (hashTable[index] != nullptr)
   {
-    get(*newElement);
+    // check if the current index already contains an element with the same key
+    if (hashTable[index]->getUserName() == indexingKey)
+    {
+      // throw ElementAlreadyExistsException if newElement is
+      // already in the Dictionary.
+      throw ElementAlreadyExistsException("The element already exists.");
+    }
+
+    // increment current index by 1
+    // get the modulo of CAPACITY to make sure thatt
+    //  the index stays within the valid range
+    index = (index + 1) % CAPACITY;
+
+    // check if we have checked all indices
+    if (index == initialIndex)
+    {
+      throw UnableToInsertException("Unable to insert element. Hash table is full.");
+    }
   }
 
-  catch (ElementAlreadyExistsException &e)
-  {
-    cout << " Element already exists" << endl;
-  }
-  catch (EmptyDataCollectionException &e)
-  {
-    cout << "Empty Data Collection" << endl;
-  }
+  // insert the new elemnt at the found index
+  hashTable[index] = newElement;
+  cout << index << endl;
 
-  Profile *nextElement = new Profile(*newElement);
-  unsigned int newIndex = hashFunction(newElement->getUserName());
-
-  while (hashTable[newIndex] != nullptr)
-  {
-    // Linear probing: Move to the next slot
-    newIndex = newIndex + 1;
-  }
-
-  hashTable[1] = nextElement;
-
+  // increment the elementCount
   elementCount++;
 
   return;
