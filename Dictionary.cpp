@@ -89,7 +89,10 @@ unsigned int Dictionary::hashFunction(string indexingKey)
   // "hashCode" is an intermediate result
   unsigned int hashCode = (indexingKeyInt + indexingKeyInt * indexingKeyInt); // O(1)
   hashCode = hashCode ^ (1 << 4);
+  hashCode = hashCode + (indexingKeyInt * 33 );
+  hashCode = hashCode * ((indexingKeyInt^3 )- hashCode);
   hashCode = hashCode * indexingKeyInt;
+
 
   hashCode = (hashCode * (hashCode << 5) + indexingKeyInt * indexingKeyInt + hashCode) % CAPACITY;
 
