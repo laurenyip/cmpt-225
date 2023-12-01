@@ -87,11 +87,11 @@ unsigned int Dictionary::hashFunction(string indexingKey)
   uint64_t indexingKeyInt = stoul(indexingKey); // O(1)
 
   // "hashCode" is an intermediate result
-  unsigned int hashCode = (indexingKeyInt + indexingKeyInt * indexingKeyInt) % CAPACITY; // O(1)
-  if (hashCode % 101 == 0)
-  {
-    hashCode = hashCode / 2;
-  }
+  unsigned int hashCode = (indexingKeyInt + indexingKeyInt * indexingKeyInt); // O(1)
+  hashCode = hashCode ^ (1 << 4);
+  hashCode = hashCode * indexingKeyInt;
+
+  hashCode = (hashCode * (hashCode << 5) + indexingKeyInt * indexingKeyInt + hashCode) % CAPACITY;
 
   return hashCode;
 }
